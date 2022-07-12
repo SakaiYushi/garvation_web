@@ -1,0 +1,26 @@
+#使用するDocker-composeのバージョン
+version: "3.9"
+
+#services: アプリケーションを動かすための要素群
+services:
+  #frontend: 本アプリではReact.jsを採用
+  frontend:
+    container_name: frontend
+    #build:ComposeFile実行時にビルドされるpath
+    build:
+      #context:どこからパスが始まるか?
+      #以下だと現在のpath
+      context: .
+      dockerfile: container/frontend/Dockerfile
+      #volumes:マウントする設定ファイルのパス
+    volumes:
+      - ./frontend:/usr/src/app
+    #ここと作成したtestの内容が合ってないと崩壊する
+    command: sh -c "cd test && yarn start"
+    ports:
+      - "3000:3000"
+    #標準入出力とエラー出力をコンテナに結びつける設定
+    stdin_open: true
+    #ホットリロードを行う設定
+    environment:
+      - CHOKIDAR_USEPOLLING=true
